@@ -1,6 +1,6 @@
 ## TODO:
-## Student Name:
-## Student ID: 
+## Student Name: Evan Gocool
+## Student ID: 220178398
 
 # Meeting Slot Suggestion Lab Repository
 
