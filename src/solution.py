@@ -50,6 +50,10 @@ def suggest_slots(
     WORK_END_TIME = _time_to_minutes("17:00")
     SLOT_INCREMENT = 15  # minutes
 
+    # Add lunch break as a fixed busy interval
+    LUNCH_START = _time_to_minutes("12:00")
+    LUNCH_END = _time_to_minutes("13:00")
+
     # Convert events to minute ranges
     busy_intervals = []
     for event in events:
@@ -57,6 +61,9 @@ def suggest_slots(
             _time_to_minutes(event["start"]),
             _time_to_minutes(event["end"])
         ))
+
+    # Include lunch break
+    busy_intervals.append((LUNCH_START, LUNCH_END))
 
     busy_intervals.sort()
 
@@ -67,11 +74,8 @@ def suggest_slots(
     while start <= latest_start:
         end = start + meeting_duration
 
-        # Check for overlap with any busy interval
         overlaps = False
         for busy_start, busy_end in busy_intervals:
-            # Overlap condition:
-            # start < busy_end AND end > busy_start
             if start < busy_end and end > busy_start:
                 overlaps = True
                 break
