@@ -74,6 +74,11 @@ def suggest_slots(
     while start <= latest_start:
         end = start + meeting_duration
 
+        # new req (no starting after 15:00 on friday)
+        if day == "Fri" and start > _time_to_minutes("15:00"):
+            start += SLOT_INCREMENT
+            continue
+
         overlaps = False
         for busy_start, busy_end in busy_intervals:
             if start < busy_end and end > busy_start:
