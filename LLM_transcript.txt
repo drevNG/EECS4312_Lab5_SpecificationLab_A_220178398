@@ -839,6 +839,94 @@ align them word-for-word with a rubric or handout
 
 
 
+I have a new req that there can't be meetings on fridays after 15:00, is this a good test case?
+def test_friday_meetings_do_not_start_after_1500():
+    """
+    Constraint:
+    there can't be meetings on fridays after 15:00
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=30, day="Fri")
+
+    assert "15:00" in slots      # Allowed
+    assert "15:15" not in slots  # Not allowed
+    assert "15:30" not in slots
+    assert "16:00" not in slots
+
+You’re very close — conceptually this is a good test, but there are two small things to tighten up so it’s unambiguous and grading-safe.
+
+✅ What’s good about this test
+
+✔ Clearly states the new requirement
+
+✔ Uses day="Fri" explicitly
+
+✔ Tests the boundary (15:00 allowed, after not allowed)
+
+✔ Does not depend on events (clean, isolated constraint)
+
+This is exactly the right kind of test to add for a new requirement.
+
+⚠️ Two improvements I strongly recommend
+1️⃣ Be precise about what “after 15:00” means
+
+Your assertions imply:
+
+15:00 ✅ allowed
+
+anything strictly greater than 15:00 ❌ not allowed
+
+That’s good — but it should be obvious from the test.
+
+2️⃣ Remove redundancy and add one stronger assertion
+
+You don’t need both "15:30" and "16:00"; one is enough.
+Instead, add an assertion that ensures earlier Friday slots still work.
+
+✅ Improved version (recommended)
+def test_friday_meetings_do_not_start_after_1500():
+    """
+    Constraint:
+    On Fridays, meetings may not start after 15:00.
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=30, day="Fri")
+
+    assert "14:45" in slots      # Still allowed
+    assert "15:00" in slots      # Last allowed start time
+    assert "15:15" not in slots  # Not allowed
+
+
+This version:
+
+Clearly establishes the cutoff
+
+Tests both allowed and disallowed behavior
+
+Is less brittle and easier to justify
+
+📌 One important reminder
+
+This test will fail unless your implementation:
+
+actually checks day == "Fri", and
+
+applies a different end-of-day rule for Fridays
+
+That’s fine — adding the test first is exactly how requirement-driven testing should work.
+
+If you want, next I can:
+
+show the minimal code change to support this requirement
+
+help you phrase this as a formal requirement / acceptance criterion
+
+check for interactions with lunch + Friday cutoff
+
+Overall verdict: yes, it’s a good test case — with small refinements, it’s a very strong one.
+
+
 
 No file chosenNo file chosen
 ChatGPT can make mistakes. Check important info. See Cookie Preferences.
+
