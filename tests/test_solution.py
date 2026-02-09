@@ -122,3 +122,15 @@ def test_multiple_events_block_combined_time_range():
     assert "10:15" not in slots
     assert "10:30" not in slots
     assert "11:00" in slots
+
+def test_friday_meetings_do_not_start_after_1500():
+    """
+    Constraint:
+    On Fridays, meetings may not start after 15:00.
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=30, day="Fri")
+
+    assert "14:45" in slots      # Still allowed
+    assert "15:00" in slots      # Last allowed start time
+    assert "15:15" not in slots  # Not allowed
