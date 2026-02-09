@@ -9,7 +9,7 @@ The hidden test suite used for grading contains additional edge cases and will n
 available to students.
 """
 import pytest
-from solution import suggest_slots
+from src.solution import suggest_slots
 
 
 def test_single_event_blocks_overlapping_slots():
@@ -47,8 +47,10 @@ def test_unsorted_events_are_handled():
     ]
     slots = suggest_slots(events, meeting_duration=30, day="2026-02-01")
 
-    assert  slots[1] == "10:15"
     assert "09:30" not in slots
+    assert "11:00" not in slots
+    assert "10:00" in slots
+    assert "10:15" in slots
 
 def test_lunch_break_blocks_all_slots_during_lunch():
     """
